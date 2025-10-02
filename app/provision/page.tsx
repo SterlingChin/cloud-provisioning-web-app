@@ -106,69 +106,78 @@ export default function ProvisionPage() {
     setIsProvisioning(true);
 
     // Add terminal output
-    const addTerminalLine = (line: string, delay: number) => {
+    const addTerminalLine = (line: string, delay: number = 0) => {
       setTimeout(() => {
         setTerminalLines(prev => [...prev, line]);
       }, delay);
     };
 
-    addTerminalLine('Analyzing request...', 0);
-    addTerminalLine(`Parsing intent for ${resourceType} creation...`, 800);
-    addTerminalLine('Extracting resource parameters...', 1600);
+    addTerminalLine('Sending request to AI...');
+    addTerminalLine(`User: ${userMessage}`, 200);
+    addTerminalLine('', 400);
+    addTerminalLine('AI analyzing command...', 600);
 
     try {
-      let result;
+      // Call OpenAI API endpoint
+      const response = await fetch('/api/provision', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: userMessage,
+          resourceType: resourceType,
+        }),
+      });
 
-      if (resourceType === 'database') {
-        addTerminalLine('Creating database with parameters:', 2400);
-        addTerminalLine('  - engine: postgres', 2600);
-        addTerminalLine('  - version: 14', 2800);
-        addTerminalLine('Executing: POST /databases', 3200);
-
-        result = await api.createDatabase({
-          name: `my-database-${Date.now()}`,
-          engine: 'postgres',
-          version: '14'
-        });
-
-        addTerminalLine(`✓ Database created: ${result.id || result.name}`, 3600);
-      } else if (resourceType === 'server') {
-        addTerminalLine('Creating server with parameters:', 2400);
-        addTerminalLine('  - image: ubuntu-20.04', 2600);
-        addTerminalLine('  - size: medium', 2800);
-        addTerminalLine('Executing: POST /servers', 3200);
-
-        result = await api.createServer({
-          name: `my-server-${Date.now()}`,
-          image: 'ubuntu-20.04',
-          size: 'medium'
-        });
-
-        addTerminalLine(`✓ Server created: ${result.id || result.name}`, 3600);
-      } else if (resourceType === 'networking') {
-        addTerminalLine('Creating network with parameters:', 2400);
-        addTerminalLine('  - cidrBlock: 10.0.0.0/16', 2600);
-        addTerminalLine('Executing: POST /networking', 3200);
-
-        result = await api.createNetworkingResource({
-          name: `my-network-${Date.now()}`,
-          cidrBlock: '10.0.0.0/16'
-        });
-
-        addTerminalLine(`✓ Network created: ${result.id || result.name}`, 3600);
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.statusText}`);
       }
 
-      addTerminalLine('', 3800);
-      addTerminalLine(`SUCCESS: ${getResourceTitle()} provisioned!`, 4000);
+      const data = await response.json();
 
-      setProvisionedResource(result);
+      addTerminalLine('', 1000);
+      addTerminalLine(`AI Response: ${data.aiResponse}`, 1200);
+      addTerminalLine('', 1400);
+
+      if (data.success && data.result) {
+        addTerminalLine(`Action: ${data.action}`, 1600);
+        addTerminalLine(`Resource Type: ${data.resourceType}`, 1800);
+        addTerminalLine('', 2000);
+
+        if (data.result.resource) {
+          const resource = data.result.resource;
+          addTerminalLine('Resource Details:', 2200);
+          addTerminalLine(`  ✓ ID: ${resource.id || 'N/A'}`, 2400);
+          addTerminalLine(`  ✓ Name: ${resource.name || 'N/A'}`, 2600);
+
+          if (resource.engine) addTerminalLine(`  ✓ Engine: ${resource.engine}`, 2800);
+          if (resource.version) addTerminalLine(`  ✓ Version: ${resource.version}`, 3000);
+          if (resource.status) addTerminalLine(`  ✓ Status: ${resource.status}`, 3200);
+          if (resource.ipAddress) addTerminalLine(`  ✓ IP: ${resource.ipAddress}`, 3400);
+          if (resource.cidrBlock) addTerminalLine(`  ✓ CIDR: ${resource.cidrBlock}`, 3600);
+        }
+
+        addTerminalLine('', 3800);
+        addTerminalLine(`SUCCESS: ${getResourceTitle()} provisioned!`, 4000);
+
+        setProvisionedResource(data.result.resource || data.result);
+        setIsProvisioning(false);
+
+        return data.result.resource || data.result;
+      } else if (data.noAction) {
+        addTerminalLine('No provisioning action taken.', 1600);
+        addTerminalLine('Try: "Create a postgres database" or "Create a server"', 1800);
+        setIsProvisioning(false);
+        return null;
+      }
+
       setIsProvisioning(false);
-
-      return result;
-    } catch (error) {
-      addTerminalLine('', 3800);
-      addTerminalLine(`ERROR: Failed to provision ${resourceType}`, 4000);
-      addTerminalLine(`Details: ${error}`, 4200);
+      return data.result;
+    } catch (error: any) {
+      addTerminalLine('', 1000);
+      addTerminalLine(`ERROR: Failed to provision ${resourceType}`, 1200);
+      addTerminalLine(`Details: ${error.message}`, 1400);
       setIsProvisioning(false);
       return null;
     }
