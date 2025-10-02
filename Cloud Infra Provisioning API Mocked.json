@@ -1,0 +1,2225 @@
+{
+	"info": {
+		"_postman_id": "2b00184a-52c0-4bbe-8c71-5b57fb98acff",
+		"name": "Cloud Infrastructure Provisioning API - Mocked",
+		"description": "This collection provides a comprehensive API for managing cloud infrastructure resources. It includes endpoints to create, retrieve, update, and delete servers, databases, and networking resources. The API supports detailed management of each resource type, enabling provisioning, configuration, and monitoring of cloud infrastructure components to facilitate automated and scalable cloud operations.\n\n### Summary of Folders and Requests\n\n| Folder Name | Folder Description | Requests |\n|-------------|--------------------|----------|\n| databases | The 'databases' folder contains endpoints for managing cloud database resources. Use these endpoints to create new databases, list all databases, and handle error scenarios. This section enables users to provision, retrieve, and manage the lifecycle of database instances within the cloud infrastructure. | List all databases, Create a new database - success, Create a new database - error |\n| networking | The 'networking' folder provides endpoints for managing networking resources within the cloud infrastructure. This includes creating new networking components, listing all networking resources, and managing individual networking entities. Use these endpoints to configure and maintain the connectivity and network topology of your cloud environment. | List all networking resources, Create a new networking resource |\n| {id} (networking) | This folder is dedicated to managing a specific networking resource identified by its ID. It contains requests: Get networking resource by ID, Update networking resource by ID, Delete networking resource by ID | Get networking resource by ID, Update networking resource by ID, Delete networking resource by ID |\n| servers | The 'servers' folder contains endpoints for managing server resources in the cloud infrastructure. Use these endpoints to list all servers, create new servers, and manage individual server instances. This section enables provisioning, configuration, and lifecycle management of virtual machines or compute resources. | List all servers, Create a new server |\n| {id} (servers) | This folder is dedicated to managing a specific server resource identified by its ID. It contains requests: Get server by ID, Update server by ID, Delete server by ID | Get server by ID, Update server by ID, Delete server by ID |\n| {id} (databases) | This folder is dedicated to managing a specific database resource identified by its ID. It contains requests: Get database by ID, Update database by ID, Delete database by ID | Get database by ID, Update database by ID, Delete database by ID |",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37578199",
+		"_collection_link": "https://devrel.postman.co/workspace/Cloud-Infrastructure-Resources~5d076a20-4bfa-44c7-8ec9-18bf23b14a32/collection/20042574-2b00184a-52c0-4bbe-8c71-5b57fb98acff?action=share&source=collection_link&creator=37578199"
+	},
+	"item": [
+		{
+			"name": "servers",
+			"item": [
+				{
+					"name": "{id}",
+					"item": [
+						{
+							"name": "Get server by ID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/servers/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"servers",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "string",
+											"description": "Server unique identifier"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Server details",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/servers/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"servers",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": \"srv-123\",\n  \"name\": \"web-server-1\",\n  \"status\": \"running\",\n  \"ipAddress\": \"192.168.1.10\"\n}"
+								},
+								{
+									"name": "Server not found",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/servers/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"servers",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"code\": 404,\n  \"message\": \"Server not found\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Update server by ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"Status code is 2xx\", function () {",
+											"    pm.response.to.be.success;",
+											"});",
+											"pm.test(\"Response body is not empty\", function () {",
+											"    pm.expect(pm.response.text()).to.not.be.empty;",
+											"});"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"updated-server\",\n  \"status\": \"running\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/servers/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"servers",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "string",
+											"description": "Server unique identifier"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Server updated",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"name\": \"updated-server\",\n  \"status\": \"running\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/servers/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"servers",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": \"srv-123\",\n  \"name\": \"updated-server\",\n  \"status\": \"running\",\n  \"ipAddress\": \"192.168.1.10\"\n}"
+								},
+								{
+									"name": "Bad request",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"name\": \"updated-server\",\n  \"status\": \"running\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/servers/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"servers",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"code\": 400,\n  \"message\": \"Invalid update data\"\n}"
+								},
+								{
+									"name": "Server not found",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"name\": \"updated-server\",\n  \"status\": \"running\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/servers/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"servers",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"code\": 404,\n  \"message\": \"Server not found\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete server by ID",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/servers/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"servers",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "string",
+											"description": "Server unique identifier"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Server deleted",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/servers/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"servers",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"message\": \"Server deleted successfully\"\n}"
+								},
+								{
+									"name": "Server not found",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/servers/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"servers",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"code\": 404,\n  \"message\": \"Server not found\"\n}"
+								}
+							]
+						}
+					],
+					"description": "This folder is dedicated to managing a specific server resource identified by its ID. It contains requests that allow you to perform key operations on the server resource:\n\n| Request Name       | Method | Endpoint    | Description                                           |\n|--------------------|--------|-------------|-------------------------------------------------------|\n| Get server by ID    | GET    | /servers/:id | Retrieves detailed information about a specific server. |\n| Update server by ID | PUT    | /servers/:id | Updates properties or configurations of a specific server. |\n| Delete server by ID | DELETE | /servers/:id | Deletes a specific server resource from the system.    |"
+				},
+				{
+					"name": "List all servers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 2xx\", function () {",
+									"    pm.response.to.be.success;",
+									"});",
+									"pm.test(\"Response body is not empty\", function () {",
+									"    pm.expect(pm.response.text()).to.not.be.empty;",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/servers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"servers"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "A list of servers",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/servers",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"servers"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n  {\n    \"id\": \"srv-123\",\n    \"name\": \"web-server-1\",\n    \"status\": \"running\",\n    \"ipAddress\": \"192.168.1.10\"\n  },\n  {\n    \"id\": \"srv-124\",\n    \"name\": \"db-server-1\",\n    \"status\": \"stopped\",\n    \"ipAddress\": \"192.168.1.11\"\n  }\n]"
+						},
+						{
+							"name": "Server error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/servers",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"servers"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"code\": 500,\n  \"message\": \"Internal server error\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Create a new server",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"new-server\",\n  \"image\": \"ubuntu-20.04\",\n  \"size\": \"medium\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/servers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"servers"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Server created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"new-server\",\n  \"image\": \"ubuntu-20.04\",\n  \"size\": \"medium\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/servers",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"servers"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"id\": \"srv-125\",\n  \"name\": \"new-server\",\n  \"status\": \"provisioning\",\n  \"ipAddress\": null\n}"
+						},
+						{
+							"name": "Bad request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"new-server\",\n  \"image\": \"ubuntu-20.04\",\n  \"size\": \"medium\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/servers",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"servers"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"code\": 400,\n  \"message\": \"Invalid server configuration\"\n}"
+						}
+					]
+				}
+			],
+			"description": "The 'servers' folder contains endpoints for managing server resources in the cloud infrastructure. Use these endpoints to list all servers, create new servers, and manage individual server instances. This section enables provisioning, configuration, and lifecycle management of virtual machines or compute resources."
+		},
+		{
+			"name": "databases",
+			"item": [
+				{
+					"name": "{id}",
+					"item": [
+						{
+							"name": "Get database by ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"Status code is 2xx\", function () {",
+											"    pm.response.to.be.success;",
+											"});",
+											"pm.test(\"Response body is not empty\", function () {",
+											"    pm.expect(pm.response.text()).to.not.be.empty;",
+											"});"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/databases/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"databases",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "string",
+											"description": "Database unique identifier"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Database details",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/databases/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"databases",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": \"db-123\",\n  \"name\": \"customer-db\",\n  \"engine\": \"postgres\",\n  \"version\": \"13\"\n}"
+								},
+								{
+									"name": "Database not found",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/databases/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"databases",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"code\": 404,\n  \"message\": \"Database not found\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Update database by ID",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"updated-db\",\n  \"version\": \"14\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/databases/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"databases",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "string",
+											"description": "Database unique identifier"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Database updated",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"name\": \"updated-db\",\n  \"version\": \"14\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/databases/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"databases",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": \"db-123\",\n  \"name\": \"updated-db\",\n  \"engine\": \"postgres\",\n  \"version\": \"14\"\n}"
+								},
+								{
+									"name": "Bad request",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"name\": \"updated-db\",\n  \"version\": \"14\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/databases/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"databases",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"code\": 400,\n  \"message\": \"Invalid update data\"\n}"
+								},
+								{
+									"name": "Database not found",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"name\": \"updated-db\",\n  \"version\": \"14\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/databases/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"databases",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"code\": 404,\n  \"message\": \"Database not found\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete database by ID",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/databases/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"databases",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "string",
+											"description": "Database unique identifier"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Database deleted",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/databases/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"databases",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"message\": \"Database deleted successfully\"\n}"
+								},
+								{
+									"name": "Database not found",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/databases/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"databases",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"code\": 404,\n  \"message\": \"Database not found\"\n}"
+								}
+							]
+						}
+					],
+					"description": "This folder is dedicated to managing a specific database resource identified by its ID. It contains requests that allow you to perform key operations on the database resource:\n\n| Request Name         | Method | Endpoint       | Description                                               |\n|---------------------|--------|----------------|-----------------------------------------------------------|\n| Get database by ID   | GET    | /databases/:id | Retrieves detailed information about a specific database. |\n| Update database by ID| PUT    | /databases/:id | Updates the properties or configuration of a specific database. |\n| Delete database by ID| DELETE | /databases/:id | Deletes a specific database resource from the system.      |"
+				},
+				{
+					"name": "List all databases",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 2xx\", function () {",
+									"    pm.response.to.be.success;",
+									"});",
+									"pm.test(\"Response body is not empty\", function () {",
+									"    pm.expect(pm.response.text()).to.not.be.empty;",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/databases",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"databases"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "A list of databases",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/databases",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"databases"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n  {\n    \"id\": \"db-123\",\n    \"name\": \"customer-db\",\n    \"engine\": \"postgres\",\n    \"version\": \"13\"\n  },\n  {\n    \"id\": \"db-124\",\n    \"name\": \"analytics-db\",\n    \"engine\": \"mysql\",\n    \"version\": \"8\"\n  }\n]"
+						},
+						{
+							"name": "Server error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/databases",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"databases"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"code\": 500,\n  \"message\": \"Internal server error\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Create a new database - success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 2xx\", function () {",
+									"    pm.response.to.be.success;",
+									"});",
+									"pm.test(\"Response body is not empty\", function () {",
+									"    pm.expect(pm.response.text()).to.not.be.empty;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"new-db\",\n  \"engine\": \"postgres\",\n  \"version\": \"14\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/databases",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"databases"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Database created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"name\":\"{{$randomAlphaNumeric}}\",\n\"engine\":\"postgres\",\n\"version\":\"14\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/databases",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"databases"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"id\": \"db-125\",\n  \"name\": \"new-db\",\n  \"engine\": \"postgres\",\n  \"version\": \"14\"\n}"
+						},
+						{
+							"name": "Bad request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"new-db\",\n  \"engine\": \"postgres\",\n  \"version\": \"14\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/databases/bad",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"databases",
+										"bad"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"code\": 400,\n  \"message\": \"Invalid database configuration\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Create a new database - error",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 2xx\", function () {",
+									"    pm.response.to.be.success;",
+									"});",
+									"pm.test(\"Response body is not empty\", function () {",
+									"    pm.expect(pm.response.text()).to.not.be.empty;",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"new-db\",\n  \"engine\": \"postgres\",\n  \"version\": \"14\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/databases/bad",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"databases",
+								"bad"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Database created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"name\":\"{{$randomAlphaNumeric}}\",\n\"engine\":\"postgres\",\n\"version\":\"14\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/databases",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"databases"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"id\": \"db-125\",\n  \"name\": \"new-db\",\n  \"engine\": \"postgres\",\n  \"version\": \"14\"\n}"
+						},
+						{
+							"name": "Bad request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"new-db\",\n  \"engine\": \"postgres\",\n  \"version\": \"14\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/databases/bad",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"databases",
+										"bad"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"code\": 400,\n  \"message\": \"Invalid database configuration\"\n}"
+						}
+					]
+				}
+			],
+			"description": "The 'databases' folder contains endpoints for managing cloud database resources. Use these endpoints to create new databases, list all databases, and handle error scenarios. This section enables users to provision, retrieve, and manage the lifecycle of database instances within the cloud infrastructure."
+		},
+		{
+			"name": "networking",
+			"item": [
+				{
+					"name": "{id}",
+					"item": [
+						{
+							"name": "Get networking resource by ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"Status code is 2xx\", function () {",
+											"    pm.response.to.be.success;",
+											"});",
+											"pm.test(\"Response body is not empty\", function () {",
+											"    pm.expect(pm.response.text()).to.not.be.empty;",
+											"});"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/networking/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"networking",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "string",
+											"description": "Networking resource unique identifier"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Networking resource details",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/networking/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"networking",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": \"net-123\",\n  \"name\": \"vpc-1\",\n  \"cidrBlock\": \"10.0.0.0/16\"\n}"
+								},
+								{
+									"name": "Networking resource not found",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/networking/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"networking",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"code\": 404,\n  \"message\": \"Networking resource not found\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Update networking resource by ID",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"updated-vpc\",\n  \"cidrBlock\": \"10.0.1.0/16\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/networking/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"networking",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "string",
+											"description": "Networking resource unique identifier"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Networking resource updated",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"name\": \"updated-vpc\",\n  \"cidrBlock\": \"10.0.1.0/16\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/networking/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"networking",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": \"net-123\",\n  \"name\": \"updated-vpc\",\n  \"cidrBlock\": \"10.0.1.0/16\"\n}"
+								},
+								{
+									"name": "Bad request",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"name\": \"updated-vpc\",\n  \"cidrBlock\": \"10.0.1.0/16\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/networking/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"networking",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"code\": 400,\n  \"message\": \"Invalid update data\"\n}"
+								},
+								{
+									"name": "Networking resource not found",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"name\": \"updated-vpc\",\n  \"cidrBlock\": \"10.0.1.0/16\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/networking/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"networking",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"code\": 404,\n  \"message\": \"Networking resource not found\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete networking resource by ID",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/networking/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"networking",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "string",
+											"description": "Networking resource unique identifier"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Networking resource deleted",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/networking/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"networking",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"message\": \"Networking resource deleted successfully\"\n}"
+								},
+								{
+									"name": "Networking resource not found",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/networking/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"networking",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"code\": 404,\n  \"message\": \"Networking resource not found\"\n}"
+								}
+							]
+						}
+					],
+					"description": "This folder is dedicated to managing a specific networking resource identified by its ID. It contains requests to perform key operations on the resource:\n\n- Get networking resource by ID: Retrieves detailed information about a specific networking resource.\n- Update networking resource by ID: Updates properties or configurations of a specific networking resource.\n- Delete networking resource by ID: Deletes a specific networking resource from the system."
+				},
+				{
+					"name": "List all networking resources",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 2xx\", function () {",
+									"    pm.response.to.be.success;",
+									"});",
+									"pm.test(\"Response body is not empty\", function () {",
+									"    pm.expect(pm.response.text()).to.not.be.empty;",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/networking",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networking"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "A list of networking resources",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/networking",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"networking"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n  {\n    \"id\": \"net-123\",\n    \"name\": \"vpc-1\",\n    \"cidrBlock\": \"10.0.0.0/16\"\n  },\n  {\n    \"id\": \"net-124\",\n    \"name\": \"subnet-1\",\n    \"cidrBlock\": \"10.0.1.0/24\"\n  }\n]"
+						},
+						{
+							"name": "Server error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/networking",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"networking"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"code\": 500,\n  \"message\": \"Internal server error\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Create a new networking resource",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 2xx\", function () {",
+									"    pm.response.to.be.success;",
+									"});",
+									"pm.test(\"Response body is not empty\", function () {",
+									"    pm.expect(pm.response.text()).to.not.be.empty;",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"new-vpc\",\n  \"cidrBlock\": \"10.1.0.0/16\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/networking",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networking"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Networking resource created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"new-vpc\",\n  \"cidrBlock\": \"10.1.0.0/16\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/networking",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"networking"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"id\": \"net-125\",\n  \"name\": \"new-vpc\",\n  \"cidrBlock\": \"10.1.0.0/16\"\n}"
+						},
+						{
+							"name": "Bad request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"new-vpc\",\n  \"cidrBlock\": \"10.1.0.0/16\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/networking",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"networking"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"code\": 400,\n  \"message\": \"Invalid networking configuration\"\n}"
+						}
+					]
+				}
+			],
+			"description": "The 'networking' folder provides endpoints for managing networking resources within the cloud infrastructure. This includes creating new networking components, listing all networking resources, and managing individual networking entities. Use these endpoints to configure and maintain the connectivity and network topology of your cloud environment."
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://api.cloudinfra.example.com/v1"
+		}
+	]
+}
