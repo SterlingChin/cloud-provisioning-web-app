@@ -16,6 +16,7 @@ interface ChatInterfaceProps {
   onSendMessage: (message: string) => void;
   messages: Message[];
   disabled?: boolean;
+  examplePrompts?: string[];
 }
 
 const ChatContainer = styled.div`
@@ -115,9 +116,53 @@ const EmptyState = styled.div`
   }
 `;
 
-export default function ChatInterface({ onSendMessage, messages, disabled = false }: ChatInterfaceProps) {
+const ExamplePrompts = styled.div`
+  margin-top: ${theme.spacing.lg};
+  width: 100%;
+  max-width: 400px;
+`;
+
+const ExamplePromptsTitle = styled.p`
+  font-size: ${theme.fontSizes.sm};
+  font-weight: ${theme.fontWeights.semibold};
+  margin-bottom: ${theme.spacing.sm};
+  color: ${theme.colors.text.primary};
+`;
+
+const ExamplePrompt = styled.button`
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: ${theme.spacing.sm} ${theme.spacing.md};
+  margin-bottom: ${theme.spacing.xs};
+  background: ${theme.colors.surface};
+  border: 1px solid ${theme.colors.border};
+  border-radius: ${theme.borderRadius.md};
+  font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.text.secondary};
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${theme.colors.background};
+    border-color: ${theme.colors.primary};
+    color: ${theme.colors.primary};
+  }
+`;
+
+export default function ChatInterface({ onSendMessage, messages, disabled = false, examplePrompts }: ChatInterfaceProps) {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const defaultExamplePrompts = [
+    "Create a postgres database",
+    "I need a mysql database version 8",
+    "Make me an Ubuntu server",
+    "Create an S3 bucket to store images",
+    "Provision networking with CIDR 10.0.0.0/16"
+  ];
+
+  const prompts = examplePrompts || defaultExamplePrompts;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -135,6 +180,12 @@ export default function ChatInterface({ onSendMessage, messages, disabled = fals
     }
   };
 
+  const handleExampleClick = (prompt: string) => {
+    if (!disabled) {
+      setInput(prompt);
+    }
+  };
+
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString('en-US', {
       hour: '2-digit',
@@ -148,10 +199,19 @@ export default function ChatInterface({ onSendMessage, messages, disabled = fals
         {messages.length === 0 ? (
           <EmptyState>
             <h3>Welcome to Cloud Infrastructure Provisioning</h3>
-            <p>Describe what you'd like to create, and I'll help you provision it.</p>
-            <p style={{ marginTop: theme.spacing.md }}>
-              Example: "Create a t2.micro server running Ubuntu 20.04"
-            </p>
+            <p>Describe what you&apos;d like to create, and I&apos;ll help you provision it.</p>
+            <ExamplePrompts>
+              <ExamplePromptsTitle>Try these commands:</ExamplePromptsTitle>
+              {prompts.map((prompt, index) => (
+                <ExamplePrompt
+                  key={index}
+                  onClick={() => handleExampleClick(prompt)}
+                  disabled={disabled}
+                >
+                  {prompt}
+                </ExamplePrompt>
+              ))}
+            </ExamplePrompts>
           </EmptyState>
         ) : (
           <>

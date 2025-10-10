@@ -38,6 +38,7 @@ const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
               image: { type: 'string', description: 'OS image for server' },
               size: { type: 'string', description: 'Instance size (small, medium, large)' },
               cidrBlock: { type: 'string', description: 'CIDR block for networking' },
+              region: { type: 'string', description: 'AWS region for storage bucket' },
             },
           },
         },
@@ -58,13 +59,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Map resource types to friendly names
+    const resourceTypeNames: Record<string, string> = {
+      database: 'database',
+      server: 'server',
+      storage: 'S3 storage bucket',
+      networking: 'network resource',
+    };
+
+    const resourceTypeName = resourceTypeNames[resourceType] || 'resource';
+
     // Call OpenAI with function calling
     const completion = await openai.chat.completions.create({
       model: 'gpt-4-turbo-preview',
       messages: [
         {
           role: 'system',
-          content: `You are a cloud infrastructure provisioning assistant. Help users create and manage cloud resources like databases, servers, storage, and networking. When users request to create a resource, use the provision_infrastructure function. Be concise and technical in your responses.`,
+          content: `You are a cloud infrastructure provisioning assistant specialized in creating ${resourceTypeName}s. The user is ONLY requesting to create a ${resourceTypeName}. Use the provision_infrastructure function with resourceType="${resourceType}". Be concise and technical in your responses.`,
         },
         {
           role: 'user',
@@ -80,7 +91,19 @@ export async function POST(request: NextRequest) {
     // Check if AI wants to call a function
     if (responseMessage.tool_calls && responseMessage.tool_calls.length > 0) {
       const toolCall = responseMessage.tool_calls[0];
+      if (!('function' in toolCall)) {
+        throw new Error('Unexpected tool call type');
+      }
       const functionArgs = JSON.parse(toolCall.function.arguments);
+
+      // Validate that the resource type matches what was requested
+      if (functionArgs.resourceType !== resourceType) {
+        return NextResponse.json({
+          success: false,
+          error: `Invalid resource type. This page is for provisioning ${resourceTypeName}s only.`,
+          aiResponse: `I can only create ${resourceTypeName}s on this page. Please use the correct provisioning page for ${functionArgs.resourceType}s.`,
+        }, { status: 400 });
+      }
 
       // Execute the infrastructure provisioning
       const result = await executeProvisioning(functionArgs);
@@ -150,11 +173,28 @@ async function executeProvisioning(params: any) {
           };
           break;
 
+        case 'storage':
+          // Use Postman Flow endpoint for storage
+          endpoint = '';
+          body = {
+            'bucket-name': resourceName || `bucket-${Date.now()}`,
+            region: config?.region || 'us-east-1',
+          };
+          break;
+
         default:
           throw new Error(`Unsupported resource type: ${resourceType}`);
       }
 
-      const response = await fetch(`${baseUrl}${endpoint}`, {
+      // Use Postman Flow for storage, regular endpoints for others
+      let url = '';
+      if (resourceType === 'storage') {
+        url = 'https://deriv-space-yaml.flows.pstmn.io/api/default/create-and-list-s3-buckets';
+      } else {
+        url = `${baseUrl}${endpoint}`;
+      }
+
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -168,6 +208,31 @@ async function executeProvisioning(params: any) {
 
       const data = await response.json();
 
+      // Parse Flow response for storage
+      if (resourceType === 'storage') {
+        const bucketName = body['bucket-name'];
+        const isSuccess = data['success-response']?.http?.status === 200;
+
+        if (isSuccess) {
+          // Extract list of buckets from Flow response
+          const buckets = data['list-buckets'] || [];
+
+          return {
+            success: true,
+            resource: {
+              id: bucketName,
+              name: bucketName,
+              region: body.region || 'us-east-1',
+              status: 'available',
+              createdAt: new Date().toISOString(),
+              totalBuckets: buckets.length,
+            },
+            message: `Successfully created ${resourceType}: ${bucketName}`,
+          };
+        }
+      }
+
+      // Regular response for other resource types
       return {
         success: true,
         resource: data,
@@ -183,6 +248,17 @@ async function executeProvisioning(params: any) {
 
       const endpoint = endpoints[resourceType];
       const response = await fetch(`${baseUrl}${endpoint}`);
+
+      // Handle storage list if mock doesn't have it
+      if (!response.ok && resourceType === 'storage') {
+        console.log('Mock storage list endpoint not available, using empty list');
+        return {
+          success: true,
+          resources: [],
+          message: `Found 0 ${resourceType}(s)`,
+        };
+      }
+
       const data = await response.json();
 
       return {

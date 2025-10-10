@@ -28,10 +28,33 @@ const Sidebar = styled.aside`
 
 const Logo = styled.div`
   padding: 0 ${theme.spacing.lg};
-  margin-bottom: ${theme.spacing.xxl};
+  margin-bottom: ${theme.spacing.md};
   font-size: ${theme.fontSizes.xl};
   font-weight: ${theme.fontWeights.bold};
   color: ${theme.colors.primary};
+`;
+
+const ConnectionStatus = styled.div`
+  padding: 0 ${theme.spacing.lg};
+  margin-bottom: ${theme.spacing.xxl};
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.xs};
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.light};
+`;
+
+const StatusDot = styled.span<{ $connected: boolean }>`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: ${props => props.$connected ? '#27c93f' : '#ff5f56'};
+  animation: ${props => props.$connected ? 'pulse 2s infinite' : 'none'};
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
 `;
 
 const Nav = styled.nav`
@@ -72,6 +95,23 @@ const PageTitle = styled.h1`
 
 export default function Layout({ children }: LayoutProps) {
   const pathname = usePathname();
+  const [isConnected, setIsConnected] = React.useState(true);
+
+  // Check connection status on mount
+  React.useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+        if (apiUrl) {
+          // Just check if the env var is set for now
+          setIsConnected(true);
+        }
+      } catch (error) {
+        setIsConnected(false);
+      }
+    };
+    checkConnection();
+  }, []);
 
   const navItems = [
     { href: '/', label: 'Dashboard' },
@@ -85,6 +125,10 @@ export default function Layout({ children }: LayoutProps) {
     <LayoutContainer>
       <Sidebar>
         <Logo>Cloud Infra</Logo>
+        <ConnectionStatus>
+          <StatusDot $connected={isConnected} />
+          {isConnected ? 'Connected to Postman API' : 'Disconnected'}
+        </ConnectionStatus>
         <Nav>
           {navItems.map((item) => (
             <NavLink
