@@ -1,11 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import Layout from '@/components/Layout';
 import Button from '@/components/Button';
 import { theme } from '@/styles/theme';
+import { api } from '@/lib/api';
 
 const DashboardContainer = styled.div`
   max-width: 1200px;
@@ -77,13 +78,52 @@ const ActionsGrid = styled.div`
 
 export default function Dashboard() {
   const router = useRouter();
-
-  const stats = [
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState([
     { label: 'Total Servers', value: '0' },
     { label: 'Total Databases', value: '0' },
     { label: 'Storage Buckets', value: '0' },
     { label: 'Network Resources', value: '0' },
-  ];
+  ]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [servers, databases, storage, networking] = await Promise.allSettled([
+          api.getServers(),
+          api.getDatabases(),
+          api.getStorage(),
+          api.getNetworkingResources(),
+        ]);
+
+        setStats([
+          {
+            label: 'Total Servers',
+            value: servers.status === 'fulfilled' ? servers.value.length.toString() : '0'
+          },
+          {
+            label: 'Total Databases',
+            value: databases.status === 'fulfilled' ? databases.value.length.toString() : '0'
+          },
+          {
+            label: 'Storage Buckets',
+            value: storage.status === 'fulfilled' ? storage.value.length.toString() : '0'
+          },
+          {
+            label: 'Network Resources',
+            value: networking.status === 'fulfilled' ? networking.value.length.toString() : '0'
+          },
+        ]);
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <Layout>
@@ -96,7 +136,7 @@ export default function Dashboard() {
         <StatsGrid>
           {stats.map((stat, index) => (
             <StatCard key={index}>
-              <StatValue>{stat.value}</StatValue>
+              <StatValue>{loading ? '...' : stat.value}</StatValue>
               <StatLabel>{stat.label}</StatLabel>
             </StatCard>
           ))}

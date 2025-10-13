@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import StyledComponentsRegistry from './registry';
 import { GlobalStyles } from '@/styles/GlobalStyles';
+import './globals.css';
 
 export const metadata = {
   title: 'Cloud Infrastructure Provisioning',

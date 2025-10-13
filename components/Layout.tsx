@@ -24,6 +24,8 @@ const Sidebar = styled.aside`
   height: 100vh;
   left: 0;
   top: 0;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Logo = styled.div`
@@ -60,6 +62,13 @@ const StatusDot = styled.span<{ $connected: boolean }>`
 const Nav = styled.nav`
   display: flex;
   flex-direction: column;
+  flex: 1;
+`;
+
+const NavBottom = styled.div`
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: ${theme.spacing.md};
 `;
 
 const NavLink = styled(Link)<{ $isActive: boolean }>`
@@ -140,6 +149,14 @@ export default function Layout({ children }: LayoutProps) {
             </NavLink>
           ))}
         </Nav>
+        <NavBottom>
+          <NavLink
+            href="/diagram"
+            $isActive={pathname === '/diagram'}
+          >
+            📊 Architecture Diagram
+          </NavLink>
+        </NavBottom>
       </Sidebar>
       <MainContent>{children}</MainContent>
     </LayoutContainer>
