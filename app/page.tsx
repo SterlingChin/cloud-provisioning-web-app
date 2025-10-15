@@ -87,13 +87,52 @@ export default function Dashboard() {
   ]);
 
   useEffect(() => {
+    const fetchS3Buckets = async () => {
+      try {
+        const response = await fetch('https://deriv-space-yaml.flows.pstmn.io/api/default/LIST-S3-BUCKETS', {
+          method: 'GET',
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch buckets');
+        }
+
+        const data = await response.json();
+
+        // Parse the Flow response format: data.body[1].ListAllMyBucketsResult[1].Buckets
+        let bucketList = [];
+
+        try {
+          if (data?.body && Array.isArray(data.body) && data.body.length > 1) {
+            const result = data.body[1]?.ListAllMyBucketsResult;
+            if (result && Array.isArray(result) && result.length > 1) {
+              bucketList = result[1]?.Buckets || [];
+            }
+          }
+        } catch (parseError) {
+          console.error('Error parsing bucket list structure:', parseError);
+        }
+
+        const parsedBuckets = (bucketList || []).map((bucketWrapper: any) => {
+          const bucketData = bucketWrapper.Bucket || [];
+          const name = bucketData[0]?.Name?.[0]?.['#text'] || '';
+          return name;
+        }).filter((name: string) => name);
+
+        return parsedBuckets.length;
+      } catch (error) {
+        console.error('Error fetching S3 buckets:', error);
+        return 0;
+      }
+    };
+
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [servers, databases, storage, networking] = await Promise.allSettled([
+        const [servers, databases, s3Count, networking] = await Promise.allSettled([
           api.getServers(),
           api.getDatabases(),
-          api.getStorage(),
+          fetchS3Buckets(),
           api.getNetworkingResources(),
         ]);
 
@@ -108,7 +147,7 @@ export default function Dashboard() {
           },
           {
             label: 'Storage Buckets',
-            value: storage.status === 'fulfilled' ? storage.value.length.toString() : '0'
+            value: s3Count.status === 'fulfilled' ? s3Count.value.toString() : '0'
           },
           {
             label: 'Network Resources',

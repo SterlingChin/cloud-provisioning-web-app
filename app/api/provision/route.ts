@@ -189,10 +189,15 @@ async function executeProvisioning(params: any) {
       // Use Postman Flow for storage, regular endpoints for others
       let url = '';
       if (resourceType === 'storage') {
-        url = 'https://deriv-space-yaml.flows.pstmn.io/api/default/create-and-list-s3-buckets';
+        url = 'https://deriv-space-yaml.flows.pstmn.io/api/default/CREATE_S3_BUCKET';
       } else {
         url = `${baseUrl}${endpoint}`;
       }
+
+      console.log('=== S3 Bucket Creation Request ===');
+      console.log('URL:', url);
+      console.log('Body:', JSON.stringify(body, null, 2));
+      console.log('Resource Type:', resourceType);
 
       const response = await fetch(url, {
         method: 'POST',
@@ -202,22 +207,85 @@ async function executeProvisioning(params: any) {
         body: JSON.stringify(body),
       });
 
+      console.log('Response Status:', response.status, response.statusText);
+
       if (!response.ok) {
         throw new Error(`API request failed: ${response.statusText}`);
       }
 
-      const data = await response.json();
+      // Handle 204 No Content responses (successful but no body)
+      let data: any = {};
+      if (response.status === 204) {
+        console.log('204 No Content - bucket created successfully');
+        data = { success: true };
+      } else {
+        data = await response.json();
+      }
 
       // Parse Flow response for storage
       if (resourceType === 'storage') {
         const bucketName = body['bucket-name'];
-        const isSuccess = data['success-response']?.http?.status === 200;
+
+        // Check if the response indicates success
+        console.log('S3 Create Response:', JSON.stringify(data, null, 2));
+        console.log('Response OK:', response.ok);
+        console.log('Response Status:', response.status);
+
+        // Check for AWS errors in the response
+        const awsError = data['success-response']?.body?.[1]?.Error;
+        if (awsError) {
+          const errorCode = awsError[0]?.Code?.[0]?.['#text'];
+          const errorMessage = awsError[0]?.Message?.[0]?.['#text'];
+          console.error('AWS Error:', errorCode, errorMessage);
+          throw new Error(`AWS Error: ${errorCode} - ${errorMessage}`);
+        }
+
+        // The CREATE_S3_BUCKET flow returns 200 or 204 on success
+        const isSuccess = (response.status === 204 || response.status === 200) && !awsError;
+
+        console.log('Is Success:', isSuccess);
 
         if (isSuccess) {
-          // Extract list of buckets from Flow response
-          const buckets = data['list-buckets'] || [];
+          // Verify the bucket was actually created by listing buckets
+          console.log('Verifying bucket creation by listing all buckets...');
+          try {
+            const listResponse = await fetch('https://deriv-space-yaml.flows.pstmn.io/api/default/LIST-S3-BUCKETS', {
+              method: 'GET',
+            });
 
-          return {
+            if (listResponse.ok) {
+              const listData = await listResponse.json();
+              console.log('List response after creation:', JSON.stringify(listData, null, 2));
+
+              // Check if our bucket is in the list
+              let bucketFound = false;
+              try {
+                if (listData?.body && Array.isArray(listData.body) && listData.body.length > 1) {
+                  const result = listData.body[1]?.ListAllMyBucketsResult;
+                  if (result && Array.isArray(result) && result.length > 1) {
+                    const bucketList = result[1]?.Buckets || [];
+                    bucketFound = bucketList.some((bucketWrapper: any) => {
+                      const bucketData = bucketWrapper.Bucket || [];
+                      const name = bucketData[0]?.Name?.[0]?.['#text'] || '';
+                      return name === bucketName;
+                    });
+                  }
+                }
+              } catch (parseError) {
+                console.error('Error parsing bucket list:', parseError);
+              }
+
+              console.log(`Bucket "${bucketName}" found in list:`, bucketFound);
+
+              if (!bucketFound) {
+                console.warn(`WARNING: Bucket "${bucketName}" was not found in the list after creation!`);
+              }
+            }
+          } catch (listError) {
+            console.error('Error verifying bucket creation:', listError);
+          }
+
+          const result = {
             success: true,
             resource: {
               id: bucketName,
@@ -225,10 +293,13 @@ async function executeProvisioning(params: any) {
               region: body.region || 'us-east-1',
               status: 'available',
               createdAt: new Date().toISOString(),
-              totalBuckets: buckets.length,
             },
             message: `Successfully created ${resourceType}: ${bucketName}`,
           };
+          console.log('Returning success result:', JSON.stringify(result, null, 2));
+          return result;
+        } else {
+          throw new Error(data.message || 'Failed to create S3 bucket');
         }
       }
 
