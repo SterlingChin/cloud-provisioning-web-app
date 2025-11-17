@@ -190,23 +190,39 @@ const ArchitectureDiagram = () => {
           </div>
         </div>
 
-        {/* The 5 Challenges Solved */}
-        <div className="bg-slate-800 rounded-xl border-2 border-green-500/50 p-4 hover:border-green-500 hover:shadow-lg hover:shadow-green-500/50 transition-all duration-300 cursor-pointer">
+        {/* The 5 Developer Challenges Solved */}
+        <div className="bg-slate-800 rounded-xl border-2 border-green-500/50 p-4 transition-all duration-300">
           <h3 className="text-xl font-bold text-white mb-3 text-center">5 Developer Challenges Solved</h3>
           <div className="grid grid-cols-5 gap-4">
-            {[
-              { title: "Discovery", desc: "Find the right APIs", icon: "🔍" },
-              { title: "Contract", desc: "Frontend/backend sync", icon: "🤝" },
-              { title: "Security", desc: "Safe credential handling", icon: "🔒" },
-              { title: "Reliability", desc: "Testing & monitoring", icon: "✅" },
-              { title: "Documentation", desc: "Up-to-date docs", icon: "📚" }
-            ].map((challenge, idx) => (
-              <div key={idx} className="text-center">
-                <div className="text-4xl mb-2">{challenge.icon}</div>
-                <h4 className="text-white font-semibold mb-1">{challenge.title}</h4>
-                <p className="text-slate-400 text-xs">{challenge.desc}</p>
-              </div>
-            ))}
+            <div className="text-center p-3 rounded-lg border-2 border-transparent transition-all duration-300 cursor-pointer hover:border-blue-400 hover:bg-blue-500/10 hover:shadow-lg hover:shadow-blue-400/50 hover:scale-105">
+              <div className="text-4xl mb-2">🔍</div>
+              <h4 className="text-white font-semibold mb-1">Discover APIs</h4>
+              <p className="text-slate-400 text-xs">Find and explore APIs with Agent Mode</p>
+            </div>
+
+            <div className="text-center p-3 rounded-lg border-2 border-transparent transition-all duration-300 cursor-pointer hover:border-purple-400 hover:bg-purple-500/10 hover:shadow-lg hover:shadow-purple-400/50 hover:scale-105">
+              <div className="text-4xl mb-2">📝</div>
+              <h4 className="text-white font-semibold mb-1">Test & Document</h4>
+              <p className="text-slate-400 text-xs">Comprehensive testing and documentation</p>
+            </div>
+
+            <div className="text-center p-3 rounded-lg border-2 border-transparent transition-all duration-300 cursor-pointer hover:border-pink-400 hover:bg-pink-500/10 hover:shadow-lg hover:shadow-pink-400/50 hover:scale-105">
+              <div className="text-4xl mb-2">🎭</div>
+              <h4 className="text-white font-semibold mb-1">Mock First</h4>
+              <p className="text-slate-400 text-xs">Build frontend independently</p>
+            </div>
+
+            <div className="text-center p-3 rounded-lg border-2 border-transparent transition-all duration-300 cursor-pointer hover:border-orange-400 hover:bg-orange-500/10 hover:shadow-lg hover:shadow-orange-400/50 hover:scale-105">
+              <div className="text-4xl mb-2">📊</div>
+              <h4 className="text-white font-semibold mb-1">Monitor Reliability</h4>
+              <p className="text-slate-400 text-xs">Continuous health checks</p>
+            </div>
+
+            <div className="text-center p-3 rounded-lg border-2 border-transparent transition-all duration-300 cursor-pointer hover:border-green-400 hover:bg-green-500/10 hover:shadow-lg hover:shadow-green-400/50 hover:scale-105">
+              <div className="text-4xl mb-2">🤖</div>
+              <h4 className="text-white font-semibold mb-1">AI + MCP Integration</h4>
+              <p className="text-slate-400 text-xs">MCP in your IDE</p>
+            </div>
           </div>
         </div>
       </div>
